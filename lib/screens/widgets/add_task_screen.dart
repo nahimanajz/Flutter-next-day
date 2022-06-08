@@ -3,10 +3,12 @@ import 'package:next_day/models/task_data.dart';
 import 'package:provider/provider.dart';
 
 String newTaskTitle;
-class AddTaskScreen extends StatelessWidget {
 
+class AddTaskScreen extends StatelessWidget {
+  var isKeyboardOpen = false;
   @override
   Widget build(BuildContext context) {
+    isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom != 0;
     return Container(
       color: Color(0xFF757575),
       child: Container(
@@ -21,7 +23,7 @@ class AddTaskScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(
+            if(!isKeyboardOpen) Text(
               "Add Task",
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 30.0, color: Colors.lightBlueAccent),
@@ -30,19 +32,26 @@ class AddTaskScreen extends StatelessWidget {
               autofocus: true,
               textAlign: TextAlign.center,
               onChanged: (newValue) => newTaskTitle = newValue,
-
             ),
-            FlatButton(
+
+            ElevatedButton(
+              child: Text(
+                'Add',
+                style: TextStyle(
+                    fontSize: 24, color: Color(0xffFFFFFF)),
+              ),
               onPressed: () {
-                Provider.of<TaskData>(context, listen: false).addTask(newTaskTitle);
+                Provider.of<TaskData>(context, listen: false)
+                    .addTask(newTaskTitle);
                 Navigator.pop(context);
               },
-              child: Text(
-                "Add",
-                style: TextStyle(color: Colors.white),
-              ),
-              color: Colors.lightBlueAccent,
-            )
+              style: ButtonStyle(
+                  backgroundColor:
+                      MaterialStateProperty.all(Colors.lightBlueAccent),
+                  padding: MaterialStateProperty.all(EdgeInsets.all(2.0)),
+                  textStyle:
+                      MaterialStateProperty.all(TextStyle(fontSize: 30))),
+            ),
           ],
         ),
       ),
